@@ -11,20 +11,10 @@ public class RangeSet extends TreeSet<Range> {
 
     };
 
-    public boolean remove(Object var1);
+    public boolean remove(Object var1) {
+        
+    };
 
-    public boolean containsAll(Collection<?> var1);
-
-    public boolean addAll(Collection<? extends E> var1);
-
-    public boolean retainAll(Collection<?> var1);
-
-    public boolean removeAll(Collection<?> var1);
-
-    public void clear();
-
-    public boolean equals(Object var1);
-   
 //     private TreeSet<Range> set = new TreeSet<>();
 
 //     public void add(Range range) {
