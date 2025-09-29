@@ -80,13 +80,6 @@ public class Range implements Comparable<Range> {
         return this;
     }
 
-    public boolean isIn(double point) {
-        if ((point > this.left || (point == this.left && this.leftType == RangeType.CLOSED)) && (point < this.right || (point == this.right && this.rightType == RangeType.CLOSED))) {
-            return true;
-        }
-        return false;
-    }
-
     public double getLeftBound() {
         return this.left;
     }
@@ -103,13 +96,39 @@ public class Range implements Comparable<Range> {
         return this.left;
     }
 
-    @Override
-    public int compareTo(Range arg) {
-        if (arg.right < this.left || (arg.right == this.left && (this.leftType == RangeType.OPEN || arg.rightType == RangeType.OPEN))) {
-            return -1;
+    public String toString() {
+        return String.format("%s%,.2f, %,.2f%s", this.leftType == RangeType.OPEN ? "(":"[", this.left , this.right, this.rightType == RangeType.OPEN ? ")":"]" );
+    }
+
+    public boolean isIn(double point) {
+        if ((point > this.left || (point == this.left && this.leftType == RangeType.CLOSED)) && (point < this.right || (point == this.right && this.rightType == RangeType.CLOSED))) {
+            return true;
         }
-        if (arg.left > this.right || (arg.left == this.right && (this.rightType == RangeType.OPEN || arg.leftType == RangeType.OPEN))) {
+        return false;
+    }
+
+    public void bracket(Range range) {
+        if (this.left > range.left) {
+            this.left = range.left;
+            this.leftType = range.leftType;
+        } else if (this.left == range.left && (this.leftType == RangeType.CLOSED || range.leftType == RangeType.CLOSED)) {
+            this.leftType = RangeType.CLOSED;
+        }
+        if (this.right < range.right) {
+            this.right = range.right;
+            this.rightType = range.rightType;
+        } else if (this.right == range.right && (this.rightType == RangeType.CLOSED || range.rightType == RangeType.CLOSED)) {
+            this.rightType = RangeType.CLOSED;
+        }
+    }
+
+    @Override
+    public int compareTo(Range range) {
+        if (range.right < this.left || (range.right == this.left && (this.leftType == RangeType.OPEN || range.rightType == RangeType.OPEN))) {
             return 1;
+        }
+        if (range.left > this.right || (range.left == this.right && (this.rightType == RangeType.OPEN || range.leftType == RangeType.OPEN))) {
+            return -1;
         }
         return 0;
     }
