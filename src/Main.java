@@ -1,11 +1,11 @@
-import java.util.TreeSet;
-
 public class Main {
     public static void main(String[] args) {
         Range x1 = new Range().openClosed(2, 7);
         Range x2 = new Range().closed(7, 9);
         Range x3 = new Range().open(1, 2);
         Range x4 = new Range().openClosed(5, 9);
+        Range x5 = new Range().open(8, 9);
+        Range x6 = new Range().open(1, 8.5);
 
         // int out = x1.compareTo(x2);
         // x1.extend(x2);
@@ -24,13 +24,20 @@ public class Main {
         
         // System.out.print(ranges.toString());
 
+        System.out.println(x3.equals(x6));
+
         RangeSet ranges = new RangeSet();
 
         ranges.add(x1);
         ranges.add(x2);
         ranges.add(x3);
-        ranges.remove(x4);
 
+        System.out.println(ranges.toString());
+        ranges.remove(x4);
+        ranges.add(x5);
+
+        System.out.println(ranges.toString());
+        ranges.remove(x6);
         System.out.println(ranges.toString());
     }
 }

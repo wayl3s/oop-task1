@@ -28,8 +28,37 @@ public class RangeSet extends TreeSet<Range> {
         if (super.isEmpty()) {
             return false;
         }
-        Range difference = super.ceiling(range).difference(range);
-        this.add(difference);
+        Range closest = super.ceiling(range) == null ? super.ceiling(range): super.floor(range);
+        Range clone = null;
+        try {
+            clone = range.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        if (closest != null) {
+            while (range.compareTo(closest) == 0) {
+                clone.enclose(closest);
+                if (clone.equals(range)) {
+                    super.remove(closest);
+                    closest = super.ceiling(range) == null ? super.ceiling(range): super.floor(range);
+                    if (closest == null) {
+                        break;
+                    }
+                    continue;
+                }
+                try {
+                    clone = range.clone();
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
+                Range difference = closest.difference(range);
+                this.add(difference);
+                closest = super.ceiling(range) == null ? super.ceiling(range): super.floor(range);
+                if (closest == null) {
+                    break;
+                }
+            }
+        }
         return true;
     };
 }

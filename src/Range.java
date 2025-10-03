@@ -1,4 +1,4 @@
-public class Range implements Comparable<Range> {
+public class Range implements Comparable<Range>, Cloneable{
     private double left;
     private double right;
     private RangeType leftType;
@@ -147,6 +147,15 @@ public class Range implements Comparable<Range> {
             this.leftType = range.rightType == RangeType.CLOSED ? RangeType.OPEN: RangeType.CLOSED;
         }
         return null;
+    }
+
+    public boolean equals(Range range) {
+        return this.left == range.left && this.right == range.right && this.leftType == range.leftType && this.rightType == range.rightType;
+    }
+
+    @Override
+    protected Range clone() throws CloneNotSupportedException {
+        return (Range) super.clone();
     }
 
     @Override
