@@ -1,37 +1,35 @@
-import java.util.Collection;
 import java.util.TreeSet;
 
 public class RangeSet extends TreeSet<Range> {
-
-    public int size() {
-        return super.size();
-    }
-
     public boolean add(Range range) {
-
+        if (super.isEmpty()) {
+            super.add(range);
+            return false;
+        }
+        if (range != null) {
+            Range closest = super.ceiling(range) == null ? super.ceiling(range): super.floor(range);
+            if (closest != null) {
+                while (range.compareTo(closest) == 0) {
+                    range.enclose(closest);
+                    super.remove(closest);
+                    if (super.isEmpty()) {
+                        break;
+                    }
+                    closest = super.ceiling(range) == null ? super.ceiling(range): super.floor(range);
+                }
+            }
+            super.add(range);
+            return true;
+        }
+        return false;
     };
 
-    public boolean remove(Object var1) {
-        
+    public boolean remove(Range range) {
+        if (super.isEmpty()) {
+            return false;
+        }
+        Range difference = super.ceiling(range).difference(range);
+        this.add(difference);
+        return true;
     };
-
-//     private TreeSet<Range> set = new TreeSet<>();
-
-//     public void add(Range range) {
-//         if (range != null) {
-//             Range ceiling = set.ceiling(range);
-//             if (range.compareTo(ceiling) == 0) {
-//                 ceiling.extend(range);
-//             }
-//         }
-//     }
-
-//     public Range ceiling(Range range) {
-        
-//     }
-
-//     public boolean contains(Object o) {
-//       return this.m.containsKey(o);
-//    }
-
 }

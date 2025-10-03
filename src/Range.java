@@ -3,7 +3,7 @@ public class Range implements Comparable<Range> {
     private double right;
     private RangeType leftType;
     private RangeType rightType;
-    private enum RangeType {OPEN, CLOSED};
+    public enum RangeType {OPEN, CLOSED};
 
     // public Range(double left, double right, RangeType type) {
     //     this.left = left;
@@ -85,29 +85,30 @@ public class Range implements Comparable<Range> {
     }
     
     public double getRightBound() {
-        return this.left;
+        return this.right;
     }
 
-    public double getLeftBoundType() {
-        return this.left;
+    public RangeType getLeftBoundType() {
+        return this.leftType;
     }
     
-    public double getRightBoundType() {
-        return this.left;
+    public RangeType getRightBoundType() {
+        return this.rightType;
     }
 
     public String toString() {
-        return String.format("%s%,.2f, %,.2f%s", this.leftType == RangeType.OPEN ? "(":"[", this.left , this.right, this.rightType == RangeType.OPEN ? ")":"]" );
+        return String.format("%s%,.2f; %,.2f%s", this.leftType == RangeType.OPEN ? "(":"[", this.left , this.right, this.rightType == RangeType.OPEN ? ")":"]" );
     }
 
     public boolean isIn(double point) {
-        if ((point > this.left || (point == this.left && this.leftType == RangeType.CLOSED)) && (point < this.right || (point == this.right && this.rightType == RangeType.CLOSED))) {
+        if ((point > this.left || (point == this.left && this.leftType == RangeType.CLOSED))
+        && (point < this.right || (point == this.right && this.rightType == RangeType.CLOSED))) {
             return true;
         }
         return false;
     }
 
-    public void bracket(Range range) {
+    public void enclose(Range range) {
         if (this.left > range.left) {
             this.left = range.left;
             this.leftType = range.leftType;
@@ -120,6 +121,32 @@ public class Range implements Comparable<Range> {
         } else if (this.right == range.right && (this.rightType == RangeType.CLOSED || range.rightType == RangeType.CLOSED)) {
             this.rightType = RangeType.CLOSED;
         }
+    }
+    // Will return second range if the argument splits the main range, otherwise null
+    public Range difference(Range range) {
+        if ((range.left > this.left || (range.right == this.left && (this.leftType == RangeType.CLOSED && range.leftType == RangeType.CLOSED))) 
+        && (range.right < this.right || (range.right == this.right && (this.rightType == RangeType.CLOSED && range.rightType == RangeType.CLOSED)))) {
+            Range returnRange = new Range();
+            if (range.rightType == this.rightType) {
+                returnRange.closed(range.right, this.right);
+            } else if (range.rightType == RangeType.CLOSED && this.rightType == RangeType.OPEN) {
+                returnRange.closedOpen(range.right, this.right);
+            } else if (range.rightType == RangeType.OPEN && this.rightType == RangeType.CLOSED) {
+                returnRange.openClosed(range.right, this.right);
+            }
+            this.right = range.left;
+            this.rightType = range.leftType == RangeType.CLOSED ? RangeType.OPEN: RangeType.CLOSED;
+            return returnRange;
+        } else if (((range.left > this.left) && (range.left < this.right))
+        || ((range.left == this.left && (this.leftType == RangeType.CLOSED && range.leftType == RangeType.CLOSED)) || ((range.left == this.right) && (this.rightType == RangeType.CLOSED && range.leftType == RangeType.CLOSED)))) {
+            this.right = range.left;
+            this.rightType = range.leftType == RangeType.CLOSED ? RangeType.OPEN: RangeType.CLOSED;
+        } else if (((range.right > this.left) && (range.right < this.right))
+        || ((range.right == this.left && (this.leftType == RangeType.CLOSED && range.rightType == RangeType.CLOSED)) || ((range.right == this.right) && (this.rightType == RangeType.CLOSED && range.rightType == RangeType.CLOSED)))) {
+            this.left = range.right;
+            this.leftType = range.rightType == RangeType.CLOSED ? RangeType.OPEN: RangeType.CLOSED;
+        }
+        return null;
     }
 
     @Override
