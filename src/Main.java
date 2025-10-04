@@ -1,3 +1,5 @@
+import java.util.TreeMap;
+
 public class Main {
     public static void main(String[] args) {
         Range<Double> x1 = new Range<Double>().openClosed(2.0, 7.0);
