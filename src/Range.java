@@ -1,6 +1,6 @@
-public class Range implements Comparable<Range>, Cloneable{
-    private double left;
-    private double right;
+public class Range<C extends Comparable<C>> implements Comparable<Range<C>>, Cloneable{
+    private C left;
+    private C right;
     private RangeType leftType;
     private RangeType rightType;
     public enum RangeType {OPEN, CLOSED};
@@ -11,11 +11,11 @@ public class Range implements Comparable<Range>, Cloneable{
     //     this.type = type;
     // }
 
-    public Range open(double left, double right) {
-        if (left == right) {
+    public Range<C> open(C left, C right) {
+        if (left.equals(right)) {
             return null;
         }
-        if (left <= right) {
+        if (left.compareTo(right) < 0) {
             this.left = left;
             this.right = right;
         } else {
@@ -28,11 +28,11 @@ public class Range implements Comparable<Range>, Cloneable{
         return this;
     }
 
-    public Range openClosed(double left, double right) {
-        if (left == right) {
+    public Range<C> openClosed(C left, C right) {
+        if (left.equals(right)) {
             return null;
         }
-        if (left <= right) {
+        if (left.compareTo(right) < 0) {
             this.left = left;
             this.right = right;
             this.leftType = RangeType.OPEN;
@@ -47,11 +47,11 @@ public class Range implements Comparable<Range>, Cloneable{
         return this;
     }
 
-    public Range closedOpen(double left, double right) {
-        if (left == right) {
+    public Range<C> closedOpen(C left, C right) {
+        if (left.equals(right)) {
             return null;
         }
-        if (left <= right) {
+        if (left.compareTo(right) < 0) {
             this.left = left;
             this.right = right;
             this.leftType = RangeType.CLOSED;
@@ -66,8 +66,8 @@ public class Range implements Comparable<Range>, Cloneable{
         return this;
     }
 
-    public Range closed(double left, double right) {
-        if (left <= right) {
+    public Range<C> closed(C left, C right) {
+        if (left.compareTo(right) <= 0) {
             this.left = left;
             this.right = right;
         } else {
@@ -80,11 +80,11 @@ public class Range implements Comparable<Range>, Cloneable{
         return this;
     }
 
-    public double getLeftBound() {
+    public C getLeftBound() {
         return this.left;
     }
     
-    public double getRightBound() {
+    public C getRightBound() {
         return this.right;
     }
 
@@ -97,25 +97,25 @@ public class Range implements Comparable<Range>, Cloneable{
     }
 
     public String toString() {
-        return String.format("%s%,.2f; %,.2f%s", this.leftType == RangeType.OPEN ? "(":"[", this.left , this.right, this.rightType == RangeType.OPEN ? ")":"]" );
+        return String.format("%s%s; %s%s", this.leftType == RangeType.OPEN ? "(":"[", this.left.toString() , this.right.toString(), this.rightType == RangeType.OPEN ? ")":"]" );
     }
 
-    public boolean isIn(double point) {
-        if ((point > this.left || (point == this.left && this.leftType == RangeType.CLOSED))
-        && (point < this.right || (point == this.right && this.rightType == RangeType.CLOSED))) {
+    public boolean isIn(C point) {
+        if ((point.compareTo(this.left) > 0 || (point.equals(this.left) && this.leftType == RangeType.CLOSED))
+        && (point.compareTo(this.right) > 0 || (point.equals(this.right) && this.rightType == RangeType.CLOSED))) {
             return true;
         }
         return false;
     }
 
-    public void enclose(Range range) {
-        if (this.left > range.left) {
+    public void enclose(Range<C> range) {
+        if (this.left.compareTo(range.left) > 0) {
             this.left = range.left;
             this.leftType = range.leftType;
-        } else if (this.left == range.left && (this.leftType == RangeType.CLOSED || range.leftType == RangeType.CLOSED)) {
+        } else if (this.left.equals(range.left) && (this.leftType == RangeType.CLOSED || range.leftType == RangeType.CLOSED)) {
             this.leftType = RangeType.CLOSED;
         }
-        if (this.right < range.right) {
+        if (this.right.compareTo(range.right) < 0) {
             this.right = range.right;
             this.rightType = range.rightType;
         } else if (this.right == range.right && (this.rightType == RangeType.CLOSED || range.rightType == RangeType.CLOSED)) {
@@ -123,10 +123,10 @@ public class Range implements Comparable<Range>, Cloneable{
         }
     }
     // Will return second range if the argument splits the main range, otherwise null
-    public Range difference(Range range) {
-        if ((range.left > this.left || (range.right == this.left && (this.leftType == RangeType.CLOSED && range.leftType == RangeType.CLOSED))) 
-        && (range.right < this.right || (range.right == this.right && (this.rightType == RangeType.CLOSED && range.rightType == RangeType.CLOSED)))) {
-            Range returnRange = new Range();
+    public Range<C> difference(Range<C> range) {
+        if ((range.left.compareTo(this.left) > 0 || (range.right.equals(this.left) && (this.leftType == RangeType.CLOSED && range.leftType == RangeType.CLOSED))) 
+        && (range.right.compareTo(this.right) < 0 || (range.right.equals(this.right) && (this.rightType == RangeType.CLOSED && range.rightType == RangeType.CLOSED)))) {
+            Range<C> returnRange = new Range<C>();
             if (range.rightType == this.rightType) {
                 returnRange.closed(range.right, this.right);
             } else if (range.rightType == RangeType.CLOSED && this.rightType == RangeType.OPEN) {
@@ -137,33 +137,34 @@ public class Range implements Comparable<Range>, Cloneable{
             this.right = range.left;
             this.rightType = range.leftType == RangeType.CLOSED ? RangeType.OPEN: RangeType.CLOSED;
             return returnRange;
-        } else if (((range.left > this.left) && (range.left < this.right))
-        || ((range.left == this.left && (this.leftType == RangeType.CLOSED && range.leftType == RangeType.CLOSED)) || ((range.left == this.right) && (this.rightType == RangeType.CLOSED && range.leftType == RangeType.CLOSED)))) {
+        } else if (((range.left.compareTo(this.left) > 0) && (range.left.compareTo(this.right) < 0))
+        || ((range.left.equals(this.left) && (this.leftType == RangeType.CLOSED && range.leftType == RangeType.CLOSED)) || ((range.left.equals(this.right)) && (this.rightType == RangeType.CLOSED && range.leftType == RangeType.CLOSED)))) {
             this.right = range.left;
             this.rightType = range.leftType == RangeType.CLOSED ? RangeType.OPEN: RangeType.CLOSED;
-        } else if (((range.right > this.left) && (range.right < this.right))
-        || ((range.right == this.left && (this.leftType == RangeType.CLOSED && range.rightType == RangeType.CLOSED)) || ((range.right == this.right) && (this.rightType == RangeType.CLOSED && range.rightType == RangeType.CLOSED)))) {
+        } else if (((range.right.compareTo(this.left) > 0) && (range.right.compareTo(this.right) < 0))
+        || ((range.right.equals(this.left) && (this.leftType == RangeType.CLOSED && range.rightType == RangeType.CLOSED)) || ((range.right.equals(this.right))) && (this.rightType == RangeType.CLOSED && range.rightType == RangeType.CLOSED))) {
             this.left = range.right;
             this.leftType = range.rightType == RangeType.CLOSED ? RangeType.OPEN: RangeType.CLOSED;
         }
         return null;
     }
 
-    public boolean equals(Range range) {
-        return this.left == range.left && this.right == range.right && this.leftType == range.leftType && this.rightType == range.rightType;
+    public boolean equals(Range<C> range) {
+        return this.left.equals(range.left) && this.right.equals(range.right) && this.leftType == range.leftType && this.rightType == range.rightType;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Range<C> clone() throws CloneNotSupportedException {
+        return (Range<C>) super.clone();
     }
 
     @Override
-    protected Range clone() throws CloneNotSupportedException {
-        return (Range) super.clone();
-    }
-
-    @Override
-    public int compareTo(Range range) {
-        if (range.right < this.left || (range.right == this.left && (this.leftType == RangeType.OPEN || range.rightType == RangeType.OPEN))) {
+    public int compareTo(Range<C> range) {
+        if (range.right.compareTo(this.left) < 0 || (range.right.equals(this.left) && (this.leftType == RangeType.OPEN || range.rightType == RangeType.OPEN))) {
             return 1;
         }
-        if (range.left > this.right || (range.left == this.right && (this.rightType == RangeType.OPEN || range.leftType == RangeType.OPEN))) {
+        if (range.left.compareTo(this.right) > 0 || (range.left.equals(this.right) && (this.rightType == RangeType.OPEN || range.leftType == RangeType.OPEN))) {
             return -1;
         }
         return 0;
