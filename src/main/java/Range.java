@@ -1,15 +1,11 @@
+package main.java;
+
 public class Range<C extends Comparable<C>> implements Comparable<Range<C>>, Cloneable{
     private C left;
     private C right;
     private RangeType leftType;
     private RangeType rightType;
     public enum RangeType {OPEN, CLOSED};
-
-    // public Range(double left, double right, RangeType type) {
-    //     this.left = left;
-    //     this.right = right;
-    //     this.type = type;
-    // }
 
     public Range<C> open(C left, C right) {
         if (left.equals(right)) {
