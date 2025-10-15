@@ -6,8 +6,9 @@ public class RangeMap<K extends Comparable<K>, V> extends TreeMap<Range<K>, V> {
         return null;
     }
 
+    
     @Override
-    public V remove(Object range) {
+    public V remove(Object object) {
         return null;
     }
 }
