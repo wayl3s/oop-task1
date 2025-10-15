@@ -1,5 +1,3 @@
-package main.java;
-
 import java.util.TreeMap;
 
 public class RangeMap<K extends Comparable<K>, V> extends TreeMap<Range<K>, V> {

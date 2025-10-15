@@ -1,5 +1,3 @@
-package main.java;
-
 public class Range<C extends Comparable<C>> implements Comparable<Range<C>>, Cloneable{
     private C left;
     private C right;
@@ -118,6 +116,7 @@ public class Range<C extends Comparable<C>> implements Comparable<Range<C>>, Clo
             this.rightType = RangeType.CLOSED;
         }
     }
+    
     // Will return second range if the argument splits the main range, otherwise null
     public Range<C> difference(Range<C> range) {
         if ((range.left.compareTo(this.left) > 0 || (range.right.equals(this.left) && (this.leftType == RangeType.CLOSED && range.leftType == RangeType.CLOSED))) 
@@ -134,19 +133,17 @@ public class Range<C extends Comparable<C>> implements Comparable<Range<C>>, Clo
             this.rightType = range.leftType == RangeType.CLOSED ? RangeType.OPEN: RangeType.CLOSED;
             return returnRange;
         } else if (((range.left.compareTo(this.left) > 0) && (range.left.compareTo(this.right) < 0))
-        || ((range.left.equals(this.left) && (this.leftType == RangeType.CLOSED && range.leftType == RangeType.CLOSED)) || ((range.left.equals(this.right)) && (this.rightType == RangeType.CLOSED && range.leftType == RangeType.CLOSED)))) {
+            || ((range.left.equals(this.left) && (this.leftType == RangeType.CLOSED && range.leftType == RangeType.CLOSED)) 
+            || ((range.left.equals(this.right)) && (this.rightType == RangeType.CLOSED && range.leftType == RangeType.CLOSED)))) {
             this.right = range.left;
             this.rightType = range.leftType == RangeType.CLOSED ? RangeType.OPEN: RangeType.CLOSED;
         } else if (((range.right.compareTo(this.left) > 0) && (range.right.compareTo(this.right) < 0))
-        || ((range.right.equals(this.left) && (this.leftType == RangeType.CLOSED && range.rightType == RangeType.CLOSED)) || ((range.right.equals(this.right))) && (this.rightType == RangeType.CLOSED && range.rightType == RangeType.CLOSED))) {
+            || ((range.right.equals(this.left) && (this.leftType == RangeType.CLOSED && range.rightType == RangeType.CLOSED)) 
+            || ((range.right.equals(this.right))) && (this.rightType == RangeType.CLOSED && range.rightType == RangeType.CLOSED))) {
             this.left = range.right;
             this.leftType = range.rightType == RangeType.CLOSED ? RangeType.OPEN: RangeType.CLOSED;
         }
         return null;
-    }
-
-    public boolean equals(Range<C> range) {
-        return this.left.equals(range.left) && this.right.equals(range.right) && this.leftType == range.leftType && this.rightType == range.rightType;
     }
 
     @SuppressWarnings("unchecked")
@@ -156,11 +153,27 @@ public class Range<C extends Comparable<C>> implements Comparable<Range<C>>, Clo
     }
 
     @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || this.getClass() != object.getClass()) return false;
+        return this.left.equals(((Range<C>) object).left) 
+            && this.right.equals(((Range<C>) object).right) 
+            && this.leftType == ((Range<C>) object).leftType 
+            && this.rightType == ((Range<C>) object).rightType;
+    }
+
+    public int hashCode() {
+        
+    }
+
+    @Override
     public int compareTo(Range<C> range) {
-        if (range.right.compareTo(this.left) < 0 || (range.right.equals(this.left) && (this.leftType == RangeType.OPEN || range.rightType == RangeType.OPEN))) {
+        if (range.right.compareTo(this.left) < 0 || (range.right.equals(this.left) 
+            && (this.leftType == RangeType.OPEN || range.rightType == RangeType.OPEN))) {
             return 1;
         }
-        if (range.left.compareTo(this.right) > 0 || (range.left.equals(this.right) && (this.rightType == RangeType.OPEN || range.leftType == RangeType.OPEN))) {
+        if (range.left.compareTo(this.right) > 0 || (range.left.equals(this.right) 
+            && (this.rightType == RangeType.OPEN || range.leftType == RangeType.OPEN))) {
             return -1;
         }
         return 0;
