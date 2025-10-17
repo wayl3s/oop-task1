@@ -7,9 +7,13 @@ public class RangeMap<K extends Comparable<K>, V> extends TreeMap<Range<K>, V> {
         if (range == null) return null;
 
         Map.Entry<Range<K>, V> tempEntry = super.floorEntry(range);
+        V removedValue = null;
 
         if (tempEntry != null) {
             while (range.compareTo(tempEntry.getKey()) == 0) {
+                if (removedValue == null) {
+                    removedValue = tempEntry.getValue();
+                }
                 Range<K>[] remains = tempEntry.getKey().substract(range);
                 V tempValue = tempEntry.getValue();
                 super.remove(tempEntry.getKey());
@@ -34,6 +38,9 @@ public class RangeMap<K extends Comparable<K>, V> extends TreeMap<Range<K>, V> {
         tempEntry = super.ceilingEntry(range);
 
         if (tempEntry != null) {
+            if (removedValue == null) {
+                removedValue = tempEntry.getValue();
+            }
             while (range.compareTo(tempEntry.getKey()) == 0) {
                 Range<K>[] remains = tempEntry.getKey().substract(range);
                 V tempValue = tempEntry.getValue();
@@ -56,7 +63,8 @@ public class RangeMap<K extends Comparable<K>, V> extends TreeMap<Range<K>, V> {
             }
         }
 
-        return super.put(range, value);
+        super.put(range, value);
+        return removedValue;
     }
     
     @Override
@@ -112,5 +120,9 @@ public class RangeMap<K extends Comparable<K>, V> extends TreeMap<Range<K>, V> {
         }
         
         return removedValue;
+    }
+
+    public boolean isKeyPointIn(K point) {
+        return super.containsKey(new Range<K>().closed(point, point));
     }
 }

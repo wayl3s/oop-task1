@@ -1,4 +1,5 @@
 import java.util.Objects;
+import java.util.function.Function;
 
 public class Range<C extends Comparable<C>> implements Comparable<Range<C>>, Cloneable{
     private C left;
@@ -195,6 +196,51 @@ public class Range<C extends Comparable<C>> implements Comparable<Range<C>>, Clo
         return String.format("%s%s; %s%s", 
             this.leftType == RangeType.OPEN ? "(":"[", this.left.toString(), 
             this.right.toString(), this.rightType == RangeType.OPEN ? ")":"]");
+    }
+
+    public Range<C> fromString(String rangeString, Function<String, C> parser) {
+        if (rangeString == null || rangeString.trim().isEmpty()) {
+            throw new IllegalArgumentException("Range string cannot be null or empty");
+        }
+        
+        String trimmed = rangeString.trim();
+        
+        if (!trimmed.matches("^[\\[\\(].*?;.*?[\\]\\)]$")) {
+            throw new IllegalArgumentException("Invalid range format: " + rangeString);
+        }
+        
+        char leftBound = trimmed.charAt(0);
+        char rightBound = trimmed.charAt(trimmed.length() - 1);
+        
+        if (leftBound != '(' && leftBound != '[') {
+            throw new IllegalArgumentException("Left boundary must be '(' or '['");
+        }
+        
+        if (rightBound != ')' && rightBound != ']') {
+            throw new IllegalArgumentException("Right boundary must be ')' or ']'");
+        }
+        
+        String content = trimmed.substring(1, trimmed.length() - 1).trim();
+        String[] parts = content.split(";");
+        
+        if (parts.length != 2) {
+            throw new IllegalArgumentException("Range must contain exactly one ';' separator");
+        }
+        
+        String leftValueStr = parts[0].trim();
+        String rightValueStr = parts[1].trim();
+        
+        if (leftValueStr.isEmpty() || rightValueStr.isEmpty()) {
+            throw new IllegalArgumentException("Range values cannot be empty");
+        }
+        
+        RangeType leftType = (leftBound == '(') ? RangeType.OPEN : RangeType.CLOSED;
+        RangeType rightType = (rightBound == ')') ? RangeType.OPEN : RangeType.CLOSED;
+        
+        C leftValue = parser.apply(leftValueStr);
+        C rightValue = parser.apply(rightValueStr);
+        
+        return this.range(leftValue, rightValue, leftType, rightType);
     }
 
     @SuppressWarnings("unchecked")

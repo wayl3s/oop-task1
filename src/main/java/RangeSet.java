@@ -70,5 +70,5 @@ public class RangeSet<T extends Comparable<T>> extends TreeSet<Range<T>> {
 
     public boolean isPointIn(T point) {
         return super.contains(new Range<T>().closed(point, point));
-    } 
+    }
 }
