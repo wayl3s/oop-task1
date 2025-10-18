@@ -194,7 +194,7 @@ public class Range<C extends Comparable<C>> implements Comparable<Range<C>>, Clo
     }
 
     public String toString() {
-        return String.format("%s%s; %s%s", 
+        return String.format("%s%s;%s%s", 
             this.leftType == RangeType.OPEN ? "(":"[", this.left.toString(), 
             this.right.toString(), this.rightType == RangeType.OPEN ? ")":"]");
     }

@@ -11,12 +11,12 @@ public class Main {
             String str = scanner.nextLine();
             if (str.equals("exit")) break;
             if (str.equals("RangeSet")) {
-                System.out.println("Choose type:\nInteger, Double");
+                System.out.println("Choose type:\n Integer, Double");
                 str = scanner.nextLine();
                 if (str.equals("Integer")) {
                     RangeSet<Integer> rangeSet = new RangeSet<Integer>();
                     while (true) {
-                        System.out.printf("Current set: %s\nName function and enter Range\nadd, remove\nExample: add [0;4)\n", rangeSet.toString());
+                        System.out.printf("Current set: %s\nName function and enter Range\n add, remove\nExample: add [0;4)\n", rangeSet.toString());
                         str = scanner.nextLine();
                         String[] strArr = str.split(" ", 2);
                         if (str.equals("exit")) break;
@@ -30,7 +30,7 @@ public class Main {
                 } else if (str.equals("Double")) {
                     RangeSet<Double> rangeSet = new RangeSet<Double>();
                     while (true) {
-                        System.out.printf("Current set: %s\nName function and enter Range\nadd, remove\nExample: add [0.0;4.0)\n", rangeSet.toString());
+                        System.out.printf("Current set: %s\nName function and enter Range\n add, remove\nExample: add [0.0;4.0)\n", rangeSet.toString());
                         str = scanner.nextLine();
                         String[] strArr = str.split(" ", 2);
                         if (str.equals("exit")) break;
@@ -43,12 +43,12 @@ public class Main {
                     break;
                 }
             } else if (str.equals("RangeMap")) {
-                System.out.println("Choose type:\nInteger, Double");
+                System.out.println("Choose type:\n Integer, Double");
                 str = scanner.nextLine();
                 if (str.equals("Integer")) {
                     RangeMap<Integer, String> rangeSet = new RangeMap<Integer, String>();
                     while (true) {
-                        System.out.printf("Current set: %s\nName function and enter Range\nadd, remove\nExample: add [0;4) word\n", rangeSet.toString());
+                        System.out.printf("Current set: %s\nName function and enter Range\n put, remove\nExample: add [0;4) word\n", rangeSet.toString());
                         str = scanner.nextLine();
                         String[] strArr = str.split(" ", 3);
                         if (str.equals("exit")) break;
@@ -62,7 +62,7 @@ public class Main {
                 } else if (str.equals("Double")) {
                     RangeMap<Double, String> rangeSet = new RangeMap<Double, String>();
                     while (true) {
-                        System.out.printf("Current set: %s\nName function and enter Range\nput, remove\nExample: add [0.0;4.0) word\n", rangeSet.toString());
+                        System.out.printf("Current set: %s\nName function and enter Range\n put, remove\nExample: add [0.0;4.0) word\n", rangeSet.toString());
                         str = scanner.nextLine();
                         String[] strArr = str.split(" ", 3);
                         if (str.equals("exit")) break;

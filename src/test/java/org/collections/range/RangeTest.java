@@ -138,9 +138,9 @@ public class RangeTest {
     @Test
     void testToString() {
         range.closed(0, 6);
-        assertEquals("[0; 6]", range.toString());
+        assertEquals("[0;6]", range.toString());
         range.closedOpen(0, 5);
-        assertEquals("[0; 5)", range.toString());
+        assertEquals("[0;5)", range.toString());
     }
 
     @Test
