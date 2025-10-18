@@ -1,3 +1,4 @@
+package org.collections.range;
 import java.util.TreeSet;
 
 public class RangeSet<T extends Comparable<T>> extends TreeSet<Range<T>> {

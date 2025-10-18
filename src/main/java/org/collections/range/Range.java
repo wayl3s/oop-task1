@@ -1,3 +1,4 @@
+package org.collections.range;
 import java.util.Objects;
 import java.util.function.Function;
 

@@ -1,3 +1,4 @@
+package org.collections.range;
 import java.util.Scanner;
 
 public class Main {
