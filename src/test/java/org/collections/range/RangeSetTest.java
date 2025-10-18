@@ -159,7 +159,6 @@ public class RangeSetTest {
         
         Iterator<Range<Integer>> iterator = rangeSet.iterator();
         Range<Integer> first = iterator.next();
-        Range<Integer> second = iterator.next();
         
         assertTrue((first.getLeft() == 1 && first.getRight() == 4) ||
                   (first.getLeft() == 6 && first.getRight() == 10));
